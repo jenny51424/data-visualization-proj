@@ -47,6 +47,26 @@ function estTimeFunc() {
 
 		}
 		console.log('sec finished');
+		busname();
+	});
+}
+
+
+function busname() {
+	var routeURL = "http://andy.emath.tw/taipei.php?data=ROUTE";
+	$.getJSON(routeURL, function(d) {
+		var arr = d.BusInfo;
+		
+		for (var i = 0; i < arr.length; i++) {			
+			var routeID = arr[i].Id;
+			var nameZh = arr[i].nameZh;
+			
+			for(var stop in data){				
+				if (data[stop]['RouteID'] == routeID) {	
+					data[stop]['busnameZh'] = nameZh;
+				}
+			}
+		}
 		markAll();
 	});
 }
@@ -61,7 +81,7 @@ function markAll() {
 		var stopObj = data[stop];
 		var m = L.marker([stopObj['lat'], stopObj['lon']]);
 		m.bindPopup("站名: " + stopObj['nameZh'] + '<br>Stop: ' + stopObj['nameEn'] +
-			"<br>路線編號: " + stopObj['RouteID'] + "<br>預估等待時間: " + stopObj['EstimateTime']);
+			"<br>公車名稱: " + stopObj['busnameZh'] + "<br>預估等待時間: " + stopObj['EstimateTime']);
 		markers.addLayer(m);	
 	}
 	map.addLayer(markers);
